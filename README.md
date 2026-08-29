@@ -8,6 +8,7 @@ into Aderant Expert through an explicitly controlled target adapter.
 The project is currently in its planning phase. Start with:
 
 - [Product architecture](docs/architecture/product-architecture.md)
+- [Multi-project and project-file architecture](docs/architecture/project-system.md)
 - [Legacy schema assessment](docs/architecture/legacy-schema-assessment.md)
 - [Procedure dependency map](docs/architecture/procedure-dependency-map.md)
 - [Backlog and work breakdown](docs/planning/backlog.md)

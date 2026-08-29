@@ -85,16 +85,121 @@
   },
   {
     "wbs": "2.2",
-    "title": "Implement merger project workspace and versioned configuration",
-    "priority": "p1",
-    "type": "feature",
+    "title": "[Epic] Build the multi-project workspace and portable merger project system",
+    "priority": "p0",
+    "type": "epic",
     "areas": ["ui", "architecture"],
     "milestone": "Walking skeleton",
     "dependsOn": ["2.1"],
     "acceptance": [
-      "Operators can create, open, archive, and inspect a merger project without storing secrets in its files.",
-      "Configuration, mapping, staging-contract, and application versions are recorded and validated on open.",
-      "Project portability and incompatible-version behavior are covered by tests."
+      "One portable .mergerproj manifest authoritatively captures each merger's scope, decisions, ETL rules, policies, versions, and non-secret references.",
+      "Several projects can remain open and run concurrently without shared mutable current-project state or cross-project resource disposal.",
+      "Every run records an immutable, content-hashed project snapshot and referenced-artifact hashes."
+    ]
+  },
+  {
+    "wbs": "2.2.1",
+    "title": "Define the .mergerproj schema and canonical serialization",
+    "priority": "p0",
+    "type": "feature",
+    "areas": ["architecture", "data"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["2.2"],
+    "acceptance": [
+      "A published JSON Schema defines identity, versions, connection-profile references, scope, decisions, mappings, transformations, validations, crosswalks, and pipeline policy.",
+      "Canonical UTF-8 serialization is deterministic and excludes credentials, extracted data, mutable run state, and machine-specific absolute paths.",
+      "Relative artifact references are constrained beneath the project root and can carry SHA-256 content hashes.",
+      "Golden files cover minimal, complete, invalid, unknown-field, and unsupported-version manifests."
+    ]
+  },
+  {
+    "wbs": "2.2.2",
+    "title": "Implement atomic project persistence, migration, and recovery",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["architecture", "quality"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["2.2.1"],
+    "acceptance": [
+      "Create, open, save, save-as, and close validate the manifest and preserve its stable ProjectId.",
+      "Saves use temporary-file flush and atomic replacement with a recoverable backup and never leave a partially written manifest.",
+      "Supported older versions migrate through explicit tested transformations; unsupported major versions open read-only or fail clearly.",
+      "External edits and concurrent writers are detected using content hashes and a per-project write lease."
+    ]
+  },
+  {
+    "wbs": "2.2.3",
+    "title": "Implement concurrent project sessions and resource isolation",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["architecture", "ui", "quality"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["2.2.1"],
+    "acceptance": [
+      "Every open project owns a ProjectSession, dependency-injection scope, cancellation boundary, working directory, log context, and run coordinator.",
+      "Commands and background notifications carry project/session identity; there is no process-wide mutable current project.",
+      "Closing or failing one project does not cancel, dispose, alter, or misroute activity for another project.",
+      "Concurrency tests run at least two projects with different profiles and overlapping pipeline stages."
+    ]
+  },
+  {
+    "wbs": "2.2.4",
+    "title": "Implement secure connection-profile and secret references",
+    "priority": "p0",
+    "type": "feature",
+    "areas": ["security", "connector", "architecture"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["1.5", "2.2.1"],
+    "acceptance": [
+      "Project manifests store connector type and stable profile identity but no password, token, secret-bearing connection string, or encryption key.",
+      "Profiles resolve through an approved secure store and distinguish source, staging, Aderant test, and Aderant production environments.",
+      "Missing, unauthorized, or environment-mismatched profiles fail before pipeline execution and produce redacted diagnostics.",
+      "Exporting or cloning a project never transfers secrets."
+    ]
+  },
+  {
+    "wbs": "2.2.5",
+    "title": "Snapshot decisions and ETL rules for reproducible runs",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["data", "quality", "architecture"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["1.3", "2.2.1"],
+    "acceptance": [
+      "Starting a run validates and canonically serializes the saved project and hashes every execution-affecting referenced artifact.",
+      "The immutable snapshot records decisions, mappings, transformations, validations, crosswalk references, pipeline policy, and contract versions.",
+      "Editing the project after a run starts does not change that run; a subsequent run receives a new revision and hash.",
+      "Checkpoints and reconciliation evidence include the project snapshot hash."
+    ]
+  },
+  {
+    "wbs": "2.2.6",
+    "title": "Build the MAUI project explorer and multi-project navigation",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["ui", "architecture"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["2.2.2", "2.2.3"],
+    "acceptance": [
+      "Operators can create, open, switch, save, close, and reopen multiple projects from a project explorer.",
+      "Each project clearly displays identity, dirty/read-only state, environment, active runs, blocking findings, and save conflicts.",
+      "Recent/open project paths and UI state are app-local and cannot alter merger behavior.",
+      "Navigation and progress remain associated with the correct project under concurrent background activity."
+    ]
+  },
+  {
+    "wbs": "2.2.7",
+    "title": "Add project templates, clone, import, and export workflows",
+    "priority": "p2",
+    "type": "feature",
+    "areas": ["ui", "docs", "security"],
+    "milestone": "Operational release",
+    "dependsOn": ["2.2.2", "2.2.4"],
+    "acceptance": [
+      "A new project can start from a versioned template containing reusable decisions and rules but no company data or secrets.",
+      "Clone creates a new ProjectId and explicitly resets run state, target identifiers, approvals, and company-specific decisions.",
+      "Import/export validates paths and hashes, identifies omitted artifacts, and never packages secure-profile secrets.",
+      "The UI previews the exact files and classifications included before export."
     ]
   },
   {

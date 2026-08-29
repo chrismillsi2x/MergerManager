@@ -39,6 +39,20 @@ Source adapter -> landing data -> mapping/rules -> canonical staging
   runs, findings, approvals, and reports. Long-running data work executes in
   application services and must not depend on UI state.
 
+## Project system
+
+Each company merger is represented by one portable `.mergerproj` manifest. It
+is the authoritative definition of scope, decisions, connection-profile
+references, staging-contract version, mappings, transformations, validations,
+crosswalk references, and pipeline policy. Credentials, extracted data, run
+history, and generated evidence are never embedded in the manifest.
+
+The application may open and operate several projects concurrently. Each open
+project receives an isolated application-service scope, cancellation boundary,
+working directory, staging/run identity, and log context. An app-local workspace
+store remembers recent and open project paths but is not part of any merger and
+cannot change its behavior. See [Multi-project and project-file architecture](project-system.md).
+
 ## Proposed solution boundaries
 
 - `MergerManager.App`: MAUI UI, navigation, view models, and platform services.

@@ -21,7 +21,14 @@ captured as an explicit decision or spike rather than assumed in code.
 | 1.4 | P0 | Select the active client conversion procedure and validate Aderant safety constraints | 1.1 |
 | 1.5 | P0 | Record security, privacy, and data-retention requirements | — |
 | 2.1 | P0 | Scaffold the .NET MAUI solution and automated test projects | 1.3, 1.5 |
-| 2.2 | P1 | Implement merger project workspace and versioned configuration | 2.1 |
+| 2.2 | P0 | `[Epic] Build the multi-project workspace and portable merger project system` | 2.1 |
+| 2.2.1 | P0 | Define the `.mergerproj` schema and canonical serialization | 2.2 |
+| 2.2.2 | P1 | Implement atomic project persistence, migration, and recovery | 2.2.1 |
+| 2.2.3 | P1 | Implement concurrent project sessions and resource isolation | 2.2.1 |
+| 2.2.4 | P0 | Implement secure connection-profile and secret references | 1.5, 2.2.1 |
+| 2.2.5 | P1 | Snapshot decisions and ETL rules for reproducible runs | 1.3, 2.2.1 |
+| 2.2.6 | P1 | Build the MAUI project explorer and multi-project navigation | 2.2.2, 2.2.3 |
+| 2.2.7 | P2 | Add project templates, clone, import, and export workflows | 2.2.2, 2.2.4 |
 | 2.3 | P1 | Define source connector contracts and capability model | 1.2 |
 | 2.4 | P1 | Implement the SQL Server reference source connector | 2.3 |
 | 2.5 | P1 | Implement source schema discovery and profiling | 2.4 |
