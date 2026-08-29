@@ -1,0 +1,352 @@
+[
+  {
+    "wbs": "1.1",
+    "title": "Map every CONVERT* and PROMOTE* table dependency and side effect",
+    "priority": "p0",
+    "type": "spike",
+    "areas": ["architecture", "aderant", "data"],
+    "milestone": "Contract baseline",
+    "dependsOn": [],
+    "acceptance": [
+      "Every procedure has documented local reads and updates, Aderant test/production reads and writes, key-allocation calls, and dynamic SQL.",
+      "The load-order graph and cycles are documented and checked against the current procedure bodies.",
+      "Uncertain, obsolete, and environment-specific behavior is listed as an explicit decision rather than silently retained."
+    ]
+  },
+  {
+    "wbs": "1.2",
+    "title": "Define and version the eleven-table staging compatibility contract",
+    "priority": "p0",
+    "type": "feature",
+    "areas": ["architecture", "data"],
+    "milestone": "Contract baseline",
+    "dependsOn": ["1.1"],
+    "acceptance": [
+      "NAMES, CLIENTS, ADDRESSES, CONTACTS, MATTERS, BILLGROUPS, ASSIGNMENTS, NOTES, RATES, VENDORS, and VENDORADDRESSES have a versioned data dictionary.",
+      "Every column has type, nullability, semantics, sensitivity, source/target role, and retirement status.",
+      "Compatibility tests prove current procedures can consume the contract or compatibility views without change."
+    ]
+  },
+  {
+    "wbs": "1.3",
+    "title": "Define merger run lifecycle, provenance, and audit model",
+    "priority": "p0",
+    "type": "feature",
+    "areas": ["architecture", "data", "quality"],
+    "milestone": "Contract baseline",
+    "dependsOn": ["1.2"],
+    "acceptance": [
+      "States and allowed transitions exist for discovery, full rehearsal, delta, cutover, retry, failure, and cancellation.",
+      "Project, run, step, row provenance, checkpoint, artifact, approval, and exception records are defined.",
+      "Existing COMPANY_CODE, BATCH, PROMOTE, and test/production identifier behavior has an explicit compatibility mapping."
+    ]
+  },
+  {
+    "wbs": "1.4",
+    "title": "Select the active client conversion procedure and validate Aderant safety constraints",
+    "priority": "p0",
+    "type": "spike",
+    "areas": ["architecture", "aderant"],
+    "milestone": "Contract baseline",
+    "dependsOn": ["1.1"],
+    "acceptance": [
+      "CONVERTCLIENTS, CONVERTCLIENTS_OG, and CONVERTCLIENTSHOLDER are diffed by behavior and target side effects.",
+      "One supported path is selected or a consolidation plan is approved; obsolete variants are clearly marked.",
+      "Required permissions, transaction boundaries, backup/restore expectations, and prohibited production operations are documented."
+    ]
+  },
+  {
+    "wbs": "1.5",
+    "title": "Record security, privacy, and data-retention requirements",
+    "priority": "p0",
+    "type": "spike",
+    "areas": ["security", "architecture"],
+    "milestone": "Contract baseline",
+    "dependsOn": [],
+    "acceptance": [
+      "Data classifications and least-privilege roles are defined for source, staging, Aderant test, and production.",
+      "Credential storage, log redaction, encryption, evidence export, retention, and secure deletion requirements are approved.",
+      "The threat model covers malicious source values, SQL injection, unsafe dynamic SQL, and accidental production execution."
+    ]
+  },
+  {
+    "wbs": "2.1",
+    "title": "Scaffold the .NET MAUI solution and automated test projects",
+    "priority": "p0",
+    "type": "feature",
+    "areas": ["ui", "architecture", "quality"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["1.3", "1.5"],
+    "acceptance": [
+      "The supported .NET/MAUI baseline and desktop platforms are recorded.",
+      "App, Domain, Application, Infrastructure, connector, Aderant target, and test project boundaries compile.",
+      "Dependency injection, configuration validation, structured logging, navigation, and a first automated test run locally and in CI."
+    ]
+  },
+  {
+    "wbs": "2.2",
+    "title": "Implement merger project workspace and versioned configuration",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["ui", "architecture"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["2.1"],
+    "acceptance": [
+      "Operators can create, open, archive, and inspect a merger project without storing secrets in its files.",
+      "Configuration, mapping, staging-contract, and application versions are recorded and validated on open.",
+      "Project portability and incompatible-version behavior are covered by tests."
+    ]
+  },
+  {
+    "wbs": "2.3",
+    "title": "Define source connector contracts and capability model",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["connector", "architecture"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["1.2"],
+    "acceptance": [
+      "Contracts cover connection tests, metadata discovery, typed reads, paging/streaming, cancellation, and safe sampling.",
+      "Capabilities express vendor differences without leaking vendor APIs into application or UI layers.",
+      "A connector contract-test suite can be reused by every future DBMS adapter."
+    ]
+  },
+  {
+    "wbs": "2.4",
+    "title": "Implement the SQL Server reference source connector",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["connector", "data"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["2.3"],
+    "acceptance": [
+      "A least-privilege SQL Server profile connects, validates capabilities, and streams typed rows with cancellation.",
+      "Queries use parameterization and safely quoted identifiers; credentials and source values are redacted from logs.",
+      "The connector passes the shared contract tests against a disposable database."
+    ]
+  },
+  {
+    "wbs": "2.5",
+    "title": "Implement source schema discovery and profiling",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["connector", "data", "ui"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["2.4"],
+    "acceptance": [
+      "Discovery records schemas, tables/views, columns, types, nullability, keys, relationships, and row-count estimates.",
+      "Profiling reports null, distinct, length/range, parseability, and duplicate-key signals with bounded sampling.",
+      "Operators can export a reproducible discovery snapshot without exporting confidential sample values by default."
+    ]
+  },
+  {
+    "wbs": "3.1",
+    "title": "Provision run-aware landing, staging, crosswalk, and quality schemas",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["data", "architecture"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["1.2", "1.3"],
+    "acceptance": [
+      "Idempotent migrations provision control, landing, the eleven-table staging contract, crosswalk, and quality storage.",
+      "Rows can be traced to source system/object/key, extraction, transformation version, and run.",
+      "Upgrade and compatibility tests cover an existing conversion database without deleting legacy objects."
+    ]
+  },
+  {
+    "wbs": "3.2",
+    "title": "Build the mapping and transformation rule engine",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["data", "architecture"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["2.5", "3.1"],
+    "acceptance": [
+      "Rules support direct mappings, constants, conversions, defaults, lookups, composition, and conditional logic.",
+      "Rules are versioned, deterministic, testable, and previewable against bounded source samples.",
+      "Coverage identifies every required staging column as mapped, defaulted, derived, or unresolved."
+    ]
+  },
+  {
+    "wbs": "3.3",
+    "title": "Build crosswalk management with import, export, and validation",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["data", "ui", "quality"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["3.1"],
+    "acceptance": [
+      "Operators can edit and bulk import/export versioned source-to-canonical code and identifier mappings.",
+      "Duplicate, missing, conflicting, and unused mappings are surfaced before a run.",
+      "Every change records author, time, reason, and affected runs without placing confidential values in logs."
+    ]
+  },
+  {
+    "wbs": "3.4",
+    "title": "Implement dependency-aware pipeline orchestration and checkpoints",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["architecture", "data", "quality"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["1.3", "3.1"],
+    "acceptance": [
+      "The pipeline plans extraction, normalization, validation, test conversion, and production promotion from a dependency graph.",
+      "Steps expose progress, cancellation, duration, row counts, checkpoints, and structured failure details.",
+      "Interrupted runs resume only from safe checkpoints and cannot skip required validation or approval gates."
+    ]
+  },
+  {
+    "wbs": "3.5",
+    "title": "Implement validation findings, exception approvals, and gating",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["quality", "data", "ui"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["3.2", "3.4"],
+    "acceptance": [
+      "Rules cover schema, required values, types, referential integrity, uniqueness, crosswalk completeness, and domain constraints.",
+      "Findings have severity, stable identity, source/stage provenance, owner, status, and remediation evidence.",
+      "Blocking findings prevent target execution; exceptions require recorded scope, reason, approver, and expiry."
+    ]
+  },
+  {
+    "wbs": "3.6",
+    "title": "Implement reconciliation reports and evidence export",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["quality", "data", "docs"],
+    "milestone": "Core merger",
+    "dependsOn": ["3.5"],
+    "acceptance": [
+      "Reports compare source, landing, staging, Aderant test, and production counts and control totals by entity and disposition.",
+      "Missing, duplicate, rejected, and changed records drill down to provenance without exposing secrets.",
+      "An immutable evidence package records versions, timings, checks, exceptions, and approvals for sign-off."
+    ]
+  },
+  {
+    "wbs": "4.1",
+    "title": "Wrap test CONVERT* and production PROMOTE* procedures with plan and dry-run modes",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["aderant", "architecture", "security"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["1.4", "3.4"],
+    "acceptance": [
+      "The adapter verifies environment identity, permissions, contract version, prerequisites, and expected row counts before execution.",
+      "Plan/dry-run displays ordered procedures and intended effects without changing Aderant or allocating keys.",
+      "Test conversion and production promotion use distinct permissions and require explicit, audited gates."
+    ]
+  },
+  {
+    "wbs": "4.2",
+    "title": "Migrate contacts, clients, and addresses end to end",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["data", "aderant", "quality"],
+    "milestone": "Core merger",
+    "dependsOn": ["3.2", "4.1"],
+    "acceptance": [
+      "NAMES, CLIENTS, ADDRESSES, and CONTACTS mappings run through landing, staging, validation, test conversion, and reconciliation.",
+      "Shared names, contact relationships, address selection, and test/production identifier updates have deterministic fixtures.",
+      "The production path remains gated and is proven with an approved non-production target or safe harness."
+    ]
+  },
+  {
+    "wbs": "4.3",
+    "title": "Migrate matters, bill groups, and assignments end to end",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["data", "aderant", "quality"],
+    "milestone": "Core merger",
+    "dependsOn": ["4.2"],
+    "acceptance": [
+      "MATTERS, BILLGROUPS, and ASSIGNMENTS run through the complete pipeline in verified dependency order.",
+      "Client/matter codes, responsible and billing personnel, percentages, effective dates, and bill-group relationships are validated.",
+      "Fixtures cover missing references, duplicate codes, closed matters, split assignments, and rejected rows."
+    ]
+  },
+  {
+    "wbs": "4.4",
+    "title": "Migrate rates, vendors, vendor addresses, and notes end to end",
+    "priority": "p2",
+    "type": "feature",
+    "areas": ["data", "aderant", "quality"],
+    "milestone": "Operational release",
+    "dependsOn": ["4.2", "4.3"],
+    "acceptance": [
+      "RATES, VENDORS, VENDORADDRESSES, and NOTES run through the complete pipeline and reconciliation.",
+      "Rate scope/effective dates, vendor tax-sensitive data, address linkage, and client/matter note ownership are validated and redacted appropriately.",
+      "Fixtures cover boundary dates, overlapping rates, missing parents, duplicate vendors, and long note text."
+    ]
+  },
+  {
+    "wbs": "4.5",
+    "title": "Support idempotent rehearsal, delta, retry, and cutover runs",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["architecture", "data", "aderant"],
+    "milestone": "Core merger",
+    "dependsOn": ["3.4", "4.1"],
+    "acceptance": [
+      "Full and delta eligibility is explicit per entity and no longer relies on cloned _DELTA tables.",
+      "Retries after key allocation or partial writes are safe, detect prior effects, and do not create duplicates.",
+      "Cutover records freeze points, approvals, run versions, recovery steps, and final evidence."
+    ]
+  },
+  {
+    "wbs": "5.1",
+    "title": "Build the MAUI mapping, preview, validation, and run experience",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["ui", "quality"],
+    "milestone": "Core merger",
+    "dependsOn": ["2.2", "3.2", "3.5"],
+    "acceptance": [
+      "Operators can move from project overview through discovery, mapping, preview, findings, plan, run progress, and reconciliation.",
+      "Long work remains responsive, cancellable, resumable, and accessible; closing or navigating the UI does not corrupt a run.",
+      "Production-impacting actions clearly identify environment, scope, blocking findings, and required approval."
+    ]
+  },
+  {
+    "wbs": "5.2",
+    "title": "Create deterministic fixtures and connector contract tests",
+    "priority": "p2",
+    "type": "chore",
+    "areas": ["quality", "connector", "data"],
+    "milestone": "Core merger",
+    "dependsOn": ["2.3", "3.1"],
+    "acceptance": [
+      "A small synthetic merger dataset covers all eleven staging tables without real client data.",
+      "Golden outputs cover mapping, validation, ordering, retries, reconciliation, and procedure compatibility.",
+      "Every connector runs the same capability and behavior suite in a disposable environment."
+    ]
+  },
+  {
+    "wbs": "5.3",
+    "title": "Add CI, packaging, diagnostics, and support matrix",
+    "priority": "p2",
+    "type": "chore",
+    "areas": ["quality", "architecture"],
+    "milestone": "Operational release",
+    "dependsOn": ["2.1", "5.2"],
+    "acceptance": [
+      "CI restores, builds, tests, scans, and publishes diagnostics without secrets or confidential fixture data.",
+      "Signed/versioned desktop packages and upgrade behavior exist for approved platforms.",
+      "The support matrix lists OS, .NET/MAUI, DBMS/driver, SQL Server, and Aderant versions with tested status."
+    ]
+  },
+  {
+    "wbs": "6.1",
+    "title": "Publish the reusable merger playbook and automation coverage matrix",
+    "priority": "p1",
+    "type": "chore",
+    "areas": ["docs", "quality"],
+    "milestone": "Operational release",
+    "dependsOn": ["3.6", "4.5"],
+    "acceptance": [
+      "The playbook covers initiation, discovery, mapping, configuration, rehearsal, remediation, cutover, verification, and closure.",
+      "Each WBS task identifies owner, inputs, outputs, entry/exit criteria, tool automation, and required human decision.",
+      "A completed merger can promote reusable mappings/rules without carrying its source data, credentials, or company-specific objects forward."
+    ]
+  }
+]
