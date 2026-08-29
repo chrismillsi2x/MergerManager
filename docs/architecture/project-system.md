@@ -38,7 +38,8 @@ source-control diffs, and first-class .NET support.
     "mappings": [],
     "transformations": [],
     "validations": [],
-    "crosswalks": []
+    "crosswalks": [],
+    "dataChanges": []
   },
   "pipeline": { "enabledSteps": [], "policies": {} }
 }
@@ -57,6 +58,7 @@ Required sections:
 | Transformations | Ordered, typed, versioned ETL expressions and parameters |
 | Validations | Rule configuration, severity, gate behavior, and approved policy |
 | Crosswalks | Inline small mappings or relative artifact references with SHA-256 hashes |
+| Data changes | Versioned, phase-bound change-set definitions and script references |
 | Pipeline | Enabled steps, dependencies, run policies, and environment gates |
 
 ## What does not belong in the project file
@@ -140,6 +142,12 @@ Before extraction begins, MergerManager:
 Changing a decision, mapping, rule, crosswalk, or pipeline policy produces a new
 project revision. An existing run continues with its snapshot; a new run uses
 the latest saved revision.
+
+Data-change definitions are project inputs, but their mutable workflow and
+results are not. Draft/approval status, execution records, row-level
+before/after evidence, verification, and reversal records live in append-only
+control/audit storage and refer back to the project revision and definition
+hash. See [Audited data changes and go-live corrections](audited-data-changes.md).
 
 ## Open decisions
 

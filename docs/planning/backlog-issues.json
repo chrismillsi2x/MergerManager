@@ -29,16 +29,137 @@
   },
   {
     "wbs": "1.3",
-    "title": "Define merger run lifecycle, provenance, and audit model",
+    "title": "[Epic] Build end-to-end audit and governed data changes",
+    "priority": "p0",
+    "type": "epic",
+    "areas": ["architecture", "data", "audit", "security"],
+    "milestone": "Contract baseline",
+    "dependsOn": ["1.2", "1.5"],
+    "acceptance": [
+      "Every application-mediated update to landing, staging, Aderant test, or Aderant production is executed as a versioned governed change set.",
+      "Executions retain actor, reason, scope, approval, before/after evidence, lineage, transaction result, verification, and reversal history.",
+      "Temporary rehearsal and go-live corrections expire predictably without deleting their audit history.",
+      "Direct database writes are restricted and native database audit events without a matching MergerManager execution are reported."
+    ]
+  },
+  {
+    "wbs": "1.3.1",
+    "title": "Define the immutable audit-event and change-set contracts",
     "priority": "p0",
     "type": "feature",
-    "areas": ["architecture", "data", "quality"],
+    "areas": ["architecture", "audit", "data"],
     "milestone": "Contract baseline",
-    "dependsOn": ["1.2"],
+    "dependsOn": ["1.3"],
     "acceptance": [
-      "States and allowed transitions exist for discovery, full rehearsal, delta, cutover, retry, failure, and cancellation.",
-      "Project, run, step, row provenance, checkpoint, artifact, approval, and exception records are defined.",
-      "Existing COMPANY_CODE, BATCH, PROMOTE, and test/production identifier behavior has an explicit compatibility mapping."
+      "The ChangeSet contract defines identity/version, reason, phase, environment, scope, mutation hash, preconditions, evidence policy, verification, recovery, activation, and governance.",
+      "Append-only audit events cover drafting, validation, approval, execution, commit/failure, verification, retirement, reversal, supersession, and evidence deletion.",
+      "Identifiers and correlation rules link project revision, run, pipeline step, change definition, execution, row evidence, approval, and native database event.",
+      "Canonical serialization and hash-chain rules have golden compatibility tests."
+    ]
+  },
+  {
+    "wbs": "1.3.2",
+    "title": "Implement the audited data-mutation gateway",
+    "priority": "p0",
+    "type": "feature",
+    "areas": ["architecture", "audit", "data", "security"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["1.3.1"],
+    "acceptance": [
+      "UI, pipeline, typed rules, and imported SQL use one gateway for all landing, staging, Aderant test, and Aderant production writes.",
+      "The gateway enforces project/run/environment identity, authorization, phase eligibility, idempotency, timeout, transaction policy, row bounds, and approved content hash.",
+      "Architecture tests fail when other application infrastructure requests a write-capable database path.",
+      "Commit, rollback, partial-failure, retry, and cancellation behavior is deterministic and auditable."
+    ]
+  },
+  {
+    "wbs": "1.3.3",
+    "title": "Capture row-level before/after evidence and lineage",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["audit", "data", "security", "quality"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["1.3.2"],
+    "acceptance": [
+      "Every affected row records stable business key, entity/table, before/after diff, lineage, execution identity, transaction outcome, and verification linkage.",
+      "Large row images use encrypted chunked evidence artifacts with queryable indexes, offsets, classifications, and cryptographic hashes.",
+      "Sensitive fields are masked in normal UI and logs while specifically authorized audit workflows can retrieve retained evidence.",
+      "Retention deletion leaves an auditable tombstone and preserves hash-chain explainability."
+    ]
+  },
+  {
+    "wbs": "1.3.4",
+    "title": "Implement phase-bound temporary changes for rehearsal and go-live",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["audit", "data", "aderant"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["1.3.1", "1.3.2"],
+    "acceptance": [
+      "Change sets can target PreExtract, PostLanding, PostNormalize, Pre/PostTestConvert, PreProductionPromote, and PostGoLive phases.",
+      "Eligibility is restricted by exact project, environment, run or bounded run range, lifecycle phase, activation window, and dependency changes.",
+      "One-shot changes retire after verified execution; recurring changes require a bounded window and are reevaluated for every run.",
+      "Closure is blocked while an expired, unverified, or unexpectedly active temporary production change remains."
+    ]
+  },
+  {
+    "wbs": "1.3.5",
+    "title": "Implement preview, approval, verification, and reversal workflows",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["audit", "ui", "quality", "security"],
+    "milestone": "Core merger",
+    "dependsOn": ["1.3.3", "1.3.4"],
+    "acceptance": [
+      "Preview shows environment, phase, selected row bounds, redacted before/proposed-after samples, impacted relationships, validation effects, hashes, and recovery warnings.",
+      "Approval binds to the exact project, mutation, parameters, selector result, environment, and precondition hash and expires when any input changes.",
+      "Separation of duties and a time-bounded break-glass workflow are enforceable by environment policy.",
+      "Verification and reversal are governed executions; reversal never erases or edits the original history."
+    ]
+  },
+  {
+    "wbs": "1.3.6",
+    "title": "Build the audit explorer and evidence export",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["audit", "ui", "quality", "docs"],
+    "milestone": "Core merger",
+    "dependsOn": ["1.3.3", "3.6"],
+    "acceptance": [
+      "Operators can trace a business row across source lineage, landing, staging, test conversion, production promotion, corrections, verification, and reversal.",
+      "Search filters include project/run, phase, environment, entity/key, change set, actor, approval, time, result, and active/expired status.",
+      "Go-live evidence export includes all applied, failed, reversed, superseded, and active changes plus unmatched native database events.",
+      "Exports apply authorization, masking, encryption, retention classification, and tamper-evident hashes."
+    ]
+  },
+  {
+    "wbs": "1.3.7",
+    "title": "Enforce least-privilege writes and reconcile native database audit",
+    "priority": "p0",
+    "type": "feature",
+    "areas": ["audit", "security", "data", "aderant"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["1.3.2", "1.5"],
+    "acceptance": [
+      "Ordinary source and operator profiles are read-only; environment-specific gateway identities receive only reviewed mutation operations.",
+      "Database-native auditing captures direct DML, DDL, permission changes, identity, time, target, and break-glass activity according to platform capability.",
+      "A reconciliation process correlates native events to gateway executions and raises blocking findings for unmatched writes.",
+      "Break-glass access is time-bound, separately authorized, monitored, and requires retrospective evidence and approval."
+    ]
+  },
+  {
+    "wbs": "1.3.8",
+    "title": "Define merger run lifecycle, checkpoints, and provenance",
+    "priority": "p0",
+    "type": "feature",
+    "areas": ["architecture", "data", "quality", "audit"],
+    "milestone": "Contract baseline",
+    "dependsOn": ["1.2", "1.3.1"],
+    "acceptance": [
+      "States and allowed transitions exist for discovery, full rehearsal, delta, cutover, retry, failure, cancellation, and closure.",
+      "Project, run, step, row provenance, checkpoint, artifact, approval, exception, and governed-change references are defined.",
+      "Existing COMPANY_CODE, BATCH, PROMOTE, and test/production identifier behavior has an explicit compatibility mapping.",
+      "Checkpoint and resume rules cannot bypass audit, validation, approval, or environment gates."
     ]
   },
   {

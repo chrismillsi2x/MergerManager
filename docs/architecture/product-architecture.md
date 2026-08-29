@@ -32,6 +32,11 @@ Source adapter -> landing data -> mapping/rules -> canonical staging
   casually breaking the proven procedure interface.
 - **Validation:** structural, referential, business, and reconciliation checks.
   Blocking findings prevent promotion; accepted exceptions are recorded.
+- **Data mutation gateway:** the only application service allowed to change
+  landing, staging, Aderant test, or Aderant production data. Every mutation is
+  a versioned change set with phase, scope, preview, approval, before/after
+  evidence, execution result, and verification. Ad hoc SQL can be imported as a
+  governed change set but cannot bypass this boundary.
 - **Target adapter:** the only component permitted to invoke reviewed Aderant
   test conversion and production promotion operations. It supports plan/dry-run
   before execution and keeps those two target environments distinct.
@@ -90,6 +95,9 @@ evidence remains interpretable after the schema evolves.
   provider and never in project files, logs, exports, or issue attachments.
 - Every target-changing operation has a dry-run plan, an operator confirmation,
   an idempotency key, and an audit record.
+- Ordinary operator identities do not have direct DML rights. Native database
+  auditing records exceptional break-glass access that occurs outside the app;
+  application audit and database audit are reconciled.
 - Raw and staged data are treated as confidential client data. Retention,
   redaction, export, and deletion policies are explicit and testable.
 
@@ -101,3 +109,4 @@ evidence remains interpretable after the schema evolves.
 - The reviewed Aderant import interface: stored procedures, supported import
   utility, or another vendor-approved mechanism.
 - Data retention, encryption, and operator authorization requirements.
+- Required retention and encryption tier for row-level before/after evidence.

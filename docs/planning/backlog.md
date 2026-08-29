@@ -17,7 +17,15 @@ captured as an explicit decision or spike rather than assumed in code.
 | 0.1 | P0 | `[Epic] Establish the reusable merger platform` | — |
 | 1.1 | P0 | Map every `CONVERT*` and `PROMOTE*` table dependency and side effect | — |
 | 1.2 | P0 | Define and version the eleven-table staging compatibility contract | 1.1 |
-| 1.3 | P0 | Define merger run lifecycle, provenance, and audit model | 1.2 |
+| 1.3 | P0 | `[Epic] Build end-to-end audit and governed data changes` | 1.2, 1.5 |
+| 1.3.1 | P0 | Define the immutable audit-event and change-set contracts | 1.3 |
+| 1.3.2 | P0 | Implement the audited data-mutation gateway | 1.3.1 |
+| 1.3.3 | P1 | Capture row-level before/after evidence and lineage | 1.3.2 |
+| 1.3.4 | P1 | Implement phase-bound temporary changes for rehearsal and go-live | 1.3.1, 1.3.2 |
+| 1.3.5 | P1 | Implement preview, approval, verification, and reversal workflows | 1.3.3, 1.3.4 |
+| 1.3.6 | P1 | Build the audit explorer and evidence export | 1.3.3, 3.6 |
+| 1.3.7 | P0 | Enforce least-privilege writes and reconcile native database audit | 1.3.2, 1.5 |
+| 1.3.8 | P0 | Define merger run lifecycle, checkpoints, and provenance | 1.2, 1.3.1 |
 | 1.4 | P0 | Select the active client conversion procedure and validate Aderant safety constraints | 1.1 |
 | 1.5 | P0 | Record security, privacy, and data-retention requirements | — |
 | 2.1 | P0 | Scaffold the .NET MAUI solution and automated test projects | 1.3, 1.5 |
@@ -66,7 +74,7 @@ captured as an explicit decision or spike rather than assumed in code.
 
 - Type: `type:epic`, `type:feature`, `type:spike`, `type:chore`
 - Area: `area:architecture`, `area:data`, `area:connector`, `area:aderant`,
-  `area:ui`, `area:quality`, `area:security`, `area:docs`
+  `area:ui`, `area:quality`, `area:security`, `area:audit`, `area:docs`
 - Priority: `priority:p0`, `priority:p1`, `priority:p2`
 - Workflow: `blocked`, `needs-decision`
 
