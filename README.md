@@ -9,6 +9,7 @@ The project is currently in its planning phase. Start with:
 
 - [Product architecture](docs/architecture/product-architecture.md)
 - [Multi-project and project-file architecture](docs/architecture/project-system.md)
+- [Source-to-staging template architecture](docs/architecture/source-system-templates.md)
 - [Audited data changes and go-live corrections](docs/architecture/audited-data-changes.md)
 - [Legacy schema assessment](docs/architecture/legacy-schema-assessment.md)
 - [Procedure dependency map](docs/architecture/procedure-dependency-map.md)

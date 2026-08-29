@@ -36,7 +36,13 @@ captured as an explicit decision or spike rather than assumed in code.
 | 2.2.4 | P0 | Implement secure connection-profile and secret references | 1.5, 2.2.1 |
 | 2.2.5 | P1 | Snapshot decisions and ETL rules for reproducible runs | 1.3, 2.2.1 |
 | 2.2.6 | P1 | Build the MAUI project explorer and multi-project navigation | 2.2.2, 2.2.3 |
-| 2.2.7 | P2 | Add project templates, clone, import, and export workflows | 2.2.2, 2.2.4 |
+| 2.2.7 | P1 | `[Epic] Build reusable source-system templates` | 2.2.1, 2.3, 2.5, 3.2 |
+| 2.2.7.1 | P0 | Define the source-system template contract and certification model | 1.2, 2.2.1, 2.3 |
+| 2.2.7.2 | P1 | Create a merger project from a compatible template and overlay | 2.2.7.1, 2.2.2, 2.5 |
+| 2.2.7.3 | P1 | Generate source schema fingerprints and template drift reports | 2.2.7.1, 2.5 |
+| 2.2.7.4 | P1 | Promote sanitized project rules into a new template version | 2.2.7.1, 5.2 |
+| 2.2.7.5 | P2 | Implement template upgrades and three-way overlay reconciliation | 2.2.7.2, 2.2.7.4 |
+| 2.2.7.6 | P1 | Build a certified template catalog and compatibility test suite | 2.2.7.1, 5.2 |
 | 2.3 | P1 | Define source connector contracts and capability model | 1.2 |
 | 2.4 | P1 | Implement the SQL Server reference source connector | 2.3 |
 | 2.5 | P1 | Implement source schema discovery and profiling | 2.4 |
@@ -46,7 +52,7 @@ captured as an explicit decision or spike rather than assumed in code.
 | 3.4 | P1 | Implement dependency-aware pipeline orchestration and checkpoints | 1.3, 3.1 |
 | 3.5 | P1 | Implement validation findings, exception approvals, and gating | 3.2, 3.4 |
 | 3.6 | P1 | Implement reconciliation reports and evidence export | 3.5 |
-| 4.1 | P1 | Wrap test `CONVERT*` and production `PROMOTE*` procedures with plan/dry-run mode | 1.4, 3.4 |
+| 4.1 | P1 | Implement the deterministic staging-to-Expert loader with plan/dry-run mode | 1.4, 3.4 |
 | 4.2 | P1 | Migrate contacts, clients, and addresses end to end | 3.2, 4.1 |
 | 4.3 | P1 | Migrate matters, bill groups, and assignments end to end | 4.2 |
 | 4.4 | P2 | Migrate personnel, rates, vendors, and notes end to end | 4.2 |
@@ -74,7 +80,8 @@ captured as an explicit decision or spike rather than assumed in code.
 
 - Type: `type:epic`, `type:feature`, `type:spike`, `type:chore`
 - Area: `area:architecture`, `area:data`, `area:connector`, `area:aderant`,
-  `area:ui`, `area:quality`, `area:security`, `area:audit`, `area:docs`
+  `area:ui`, `area:quality`, `area:security`, `area:audit`, `area:template`,
+  `area:docs`
 - Priority: `priority:p0`, `priority:p1`, `priority:p2`
 - Workflow: `blocked`, `needs-decision`
 

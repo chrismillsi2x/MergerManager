@@ -26,6 +26,16 @@ source-control diffs, and first-class .NET support.
   "projectId": "b2cab395-fce8-4e40-8e48-57fc449879aa",
   "name": "Example Company Merger",
   "companyCode": "EX",
+  "firms": {
+    "source": { "displayName": "Example Source Firm" },
+    "target": { "displayName": "Example Target Firm" }
+  },
+  "sourceSystem": {
+    "product": "Example PMS",
+    "version": "1.0",
+    "schemaFingerprint": "sha256:..."
+  },
+  "template": { "id": "example-pms", "version": "2.1.0" },
   "stagingContract": { "version": "1.0", "compatibilityProfile": "dbo-v1" },
   "connections": {
     "source": { "connector": "sqlserver", "profile": "example-source" },
@@ -50,6 +60,9 @@ Required sections:
 | Section | Responsibility |
 | --- | --- |
 | Identity | Stable project ID, display name, company code, timestamps, and owners |
+| Firms | Source firm and target firm identities and merger-specific context |
+| Source system | PMS product/version, database platform, customization notes, and observed schema fingerprint |
+| Template | Exact source-system template ID/version plus project override base |
 | Contract | Project format, application compatibility, and staging-contract versions |
 | Connections | Connector types and named profile references, never credentials |
 | Scope | Included entities, source objects, target environments, and exclusions |
@@ -142,6 +155,11 @@ Before extraction begins, MergerManager:
 Changing a decision, mapping, rule, crosswalk, or pipeline policy produces a new
 project revision. An existing run continues with its snapshot; a new run uses
 the latest saved revision.
+
+Template inheritance is resolved before snapshotting. The run stores the
+resolved rules, template identity/version, project overrides, source schema
+fingerprint, and compatibility report; it never depends on a mutable template
+catalog entry after execution begins.
 
 Data-change definitions are project inputs, but their mutable workflow and
 results are not. Draft/approval status, execution records, row-level

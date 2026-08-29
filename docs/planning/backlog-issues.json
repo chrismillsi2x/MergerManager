@@ -310,17 +310,107 @@
   },
   {
     "wbs": "2.2.7",
-    "title": "Add project templates, clone, import, and export workflows",
+    "title": "[Epic] Build reusable source-system templates",
+    "priority": "p1",
+    "type": "epic",
+    "areas": ["template", "connector", "data", "architecture"],
+    "milestone": "Core merger",
+    "dependsOn": ["2.2.1", "2.3", "2.5", "3.2"],
+    "acceptance": [
+      "A new merger project can inherit a certified template for a compatible source PMS and staging-contract version, then record only explicit firm-specific decisions and overrides.",
+      "Compatibility uses source product/version metadata plus schema fingerprint and drift analysis rather than vendor name or column-name similarity alone.",
+      "Runs snapshot the resolved template rules and project overlay with complete provenance.",
+      "Templates contain no prior source-firm data, credentials, environment identifiers, allocated Expert IDs, approvals, or firm-specific crosswalk values."
+    ]
+  },
+  {
+    "wbs": "2.2.7.1",
+    "title": "Define the source-system template contract and certification model",
+    "priority": "p0",
+    "type": "feature",
+    "areas": ["template", "architecture", "connector", "data"],
+    "milestone": "Walking skeleton",
+    "dependsOn": ["1.2", "2.2.1", "2.3"],
+    "acceptance": [
+      "The versioned contract covers identity, PMS/DBMS compatibility, schema fingerprint, extraction, mappings, transformations, validations, generic crosswalks, required decisions, limitations, and synthetic tests.",
+      "Draft, Candidate, Certified, Deprecated, and Withdrawn states have explicit permissions and transition requirements.",
+      "Templates exclude firm identity/data, credentials, absolute paths, environment IDs, run history, approvals, allocated Expert IDs, and firm-specific crosswalk values.",
+      "Canonical packaging, signing/hashing, semantic versioning, and staging-contract compatibility have golden tests."
+    ]
+  },
+  {
+    "wbs": "2.2.7.2",
+    "title": "Create a merger project from a compatible template and overlay",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["template", "ui", "data"],
+    "milestone": "Core merger",
+    "dependsOn": ["2.2.7.1", "2.2.2", "2.5"],
+    "acceptance": [
+      "Project creation selects an exact template version only after displaying compatibility, limitations, required decisions, and schema drift.",
+      "Inherited, parameterized, overridden, disabled, and newly created rules retain template/project provenance and rationale.",
+      "Firm-specific identities, crosswalks, credentials, environments, and approvals start empty and cannot leak from template fixtures.",
+      "Runs store the fully resolved rule set, template identity/version, project overlay, fingerprint, and compatibility report."
+    ]
+  },
+  {
+    "wbs": "2.2.7.3",
+    "title": "Generate source schema fingerprints and template drift reports",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["template", "connector", "quality", "data"],
+    "milestone": "Core merger",
+    "dependsOn": ["2.2.7.1", "2.5"],
+    "acceptance": [
+      "Fingerprints cover required/optional objects, columns, types, nullability, keys, relationships, cardinality assumptions, and connector capabilities.",
+      "Drift classifies exact matches, compatible variations, missing elements, unexpected elements, changed relationships, customization collisions, and uncertified product/platform versions.",
+      "Safe matches may be accepted by policy; uncertain differences become explicit project decisions and unresolved coverage findings.",
+      "No source field is silently ignored or matched only because its name resembles a template field."
+    ]
+  },
+  {
+    "wbs": "2.2.7.4",
+    "title": "Promote sanitized project rules into a new template version",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["template", "security", "quality", "docs"],
+    "milestone": "Operational release",
+    "dependsOn": ["2.2.7.1", "5.2"],
+    "acceptance": [
+      "Operators explicitly select candidate extraction, mapping, transformation, validation, and decision assets from a successful project.",
+      "Promotion removes or parameterizes firm-specific values and scans for confidential data, credentials, server/environment references, absolute paths, and allocated IDs.",
+      "Real data examples are replaced by synthetic fixtures and known limitations and compatibility changes are documented.",
+      "Publication creates a new immutable version after tests, independent review, and approval; it never mutates the prior template."
+    ]
+  },
+  {
+    "wbs": "2.2.7.5",
+    "title": "Implement template upgrades and three-way overlay reconciliation",
     "priority": "p2",
     "type": "feature",
-    "areas": ["ui", "docs", "security"],
+    "areas": ["template", "ui", "quality"],
     "milestone": "Operational release",
-    "dependsOn": ["2.2.2", "2.2.4"],
+    "dependsOn": ["2.2.7.2", "2.2.7.4"],
     "acceptance": [
-      "A new project can start from a versioned template containing reusable decisions and rules but no company data or secrets.",
-      "Clone creates a new ProjectId and explicitly resets run state, target identifiers, approvals, and company-specific decisions.",
-      "Import/export validates paths and hashes, identifies omitted artifacts, and never packages secure-profile secrets.",
-      "The UI previews the exact files and classifications included before export."
+      "Upgrade compares the old template, new template, and project overlay without changing an active run snapshot.",
+      "Unchanged inherited rules advance automatically while conflicting overrides, removals, and contract changes require explicit resolution.",
+      "The operator sees mapping, validation, decision, limitation, fixture, and staging-contract impacts before saving.",
+      "A failed or canceled upgrade leaves the project on its original template version and remains recoverable."
+    ]
+  },
+  {
+    "wbs": "2.2.7.6",
+    "title": "Build a certified template catalog and compatibility test suite",
+    "priority": "p1",
+    "type": "feature",
+    "areas": ["template", "quality", "connector", "docs"],
+    "milestone": "Core merger",
+    "dependsOn": ["2.2.7.1", "5.2"],
+    "acceptance": [
+      "The catalog resolves immutable versions, certification state, owners, compatibility range, staging contract, limitations, release notes, and withdrawal advisories.",
+      "Every candidate/certified template runs synthetic source fixtures through extraction and mapping to deterministic validated staging output.",
+      "Catalog policy prevents withdrawn templates and clearly warns for candidate/deprecated templates when creating or upgrading a project.",
+      "Historical run evidence can resolve template metadata even after a version is deprecated or withdrawn."
     ]
   },
   {
@@ -451,16 +541,17 @@
   },
   {
     "wbs": "4.1",
-    "title": "Wrap test CONVERT* and production PROMOTE* procedures with plan and dry-run modes",
+    "title": "Implement the deterministic staging-to-Expert loader with plan and dry-run modes",
     "priority": "p1",
     "type": "feature",
     "areas": ["aderant", "architecture", "security"],
     "milestone": "Walking skeleton",
     "dependsOn": ["1.4", "3.4"],
     "acceptance": [
-      "The adapter verifies environment identity, permissions, contract version, prerequisites, and expected row counts before execution.",
-      "Plan/dry-run displays ordered procedures and intended effects without changing Aderant or allocating keys.",
-      "Test conversion and production promotion use distinct permissions and require explicit, audited gates."
+      "A versioned product-owned loader profile fixes the target tables, columns, procedures, and dependency graph for a declared staging-contract and Expert compatibility pair.",
+      "Merger projects can select a compatible loader and bounded parameters but cannot edit target mappings, loader SQL, or dependency order.",
+      "The adapter verifies target-firm environment identity, permissions, contract/profile versions, prerequisites, validation status, approvals, and expected row bounds.",
+      "Plan/dry-run displays the resolved fixed graph and intended effects without changing Expert or allocating keys; test conversion and production promotion use distinct audited permissions."
     ]
   },
   {

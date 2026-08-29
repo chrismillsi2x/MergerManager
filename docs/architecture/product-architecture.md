@@ -2,27 +2,49 @@
 
 ## Goal
 
-Provide a guided, auditable workflow that converts an unknown source database
-into a normalized staging contract and then into Aderant Expert. A merger must
-be repeatable across discovery, rehearsal, validation, delta, and cutover runs.
+Provide a guided, auditable workflow that converts the source firm's practice
+management database into a normalized staging contract and then into the target
+firm's Aderant Expert system. A merger must be repeatable across discovery,
+rehearsal, validation, delta, and cutover runs.
+
+## Terminology
+
+- **Source firm:** the firm being acquired. Its practice management system is
+  the source of the data being converted.
+- **Target firm:** the acquiring firm. Its Aderant Expert environments receive
+  the converted data.
+- **Source system:** the source firm's practice management product, version,
+  database engine, schema, and relevant customizations.
+- **Staging contract:** the stable intermediate structure separating uncertain
+  source mapping from controlled Expert loading.
+- **Source-system template:** a reusable, sanitized mapping package for a known
+  source system family and staging-contract version.
 
 ## Boundaries
 
 ```text
-Source DBMS
-    |
-    v
-Source adapter -> landing data -> mapping/rules -> canonical staging
-                                                    |
-                                                    v
-                                      validation + reconciliation
-                                                    |
-                                                    v
-                              Aderant test conversion -> production promotion
+Source firm's practice management system
+                  |
+                  v
+    connector -> landing -> source template + project overrides
+                                      |
+                                      v
+                         stable staging contract
+                                      |
+                         validation + reconciliation
+                                      |
+                                      v
+             versioned Expert loader (product-owned)
+                  |                         |
+                  v                         v
+       target firm's Expert test -> target firm's Expert production
 ```
 
 - **Source adapter:** discovers metadata and reads source data. Vendor-specific
   SQL and drivers remain behind this boundary.
+- **Source mapping:** the deliberately flexible portion of the product. A
+  project may start from a compatible source-system template and add explicit
+  firm-specific overrides until the staging contract is complete.
 - **Landing data:** immutable, run-scoped data that preserves source values and
   provenance before conversion.
 - **Canonical staging:** a versioned contract anchored to the existing tables
@@ -39,7 +61,9 @@ Source adapter -> landing data -> mapping/rules -> canonical staging
   governed change set but cannot bypass this boundary.
 - **Target adapter:** the only component permitted to invoke reviewed Aderant
   test conversion and production promotion operations. It supports plan/dry-run
-  before execution and keeps those two target environments distinct.
+  before execution and keeps those two target environments distinct. Its load
+  graph and table mappings are versioned product assets, not editable merger
+  rules. A project selects a compatible loader version and bounded parameters.
 - **MAUI application:** manages merger projects, mappings, crosswalks, previews,
   runs, findings, approvals, and reports. Long-running data work executes in
   application services and must not depend on UI state.
@@ -57,6 +81,12 @@ project receives an isolated application-service scope, cancellation boundary,
 working directory, staging/run identity, and log context. An app-local workspace
 store remembers recent and open project paths but is not part of any merger and
 cannot change its behavior. See [Multi-project and project-file architecture](project-system.md).
+
+A project may derive its initial source mappings from a source-system template.
+The project records the exact template ID/version and retains only explicit
+overrides. Compatibility is established from product/version metadata plus a
+schema fingerprint and drift report; sharing a vendor name alone is not enough.
+See [Source-to-staging template architecture](source-system-templates.md).
 
 ## Proposed solution boundaries
 
