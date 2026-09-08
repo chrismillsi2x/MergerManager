@@ -6,6 +6,11 @@ This assessment is based on the supplied `ConversionSource` SQL Server script
 dated August 29, 2026. It is an inventory and disposition proposal, not an
 assertion that every legacy object is still used in production.
 
+For active statement dependencies, target writes, transaction behavior, and
+unresolved loader decisions, use the [procedure review](procedure-dependency-map.md)
+and [line-referenced operation inventory](procedure-operation-inventory.md).
+These distinguish executable statements from commented-out experiments.
+
 ## Inventory
 
 | Signal | Count | Interpretation |
