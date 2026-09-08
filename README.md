@@ -14,6 +14,7 @@ The project is currently in its planning phase. Start with:
 - [Legacy schema assessment](docs/architecture/legacy-schema-assessment.md)
 - [Procedure dependency map](docs/architecture/procedure-dependency-map.md)
 - [Procedure operation inventory](docs/architecture/procedure-operation-inventory.md)
+- [Candidate staging compatibility contract v1](contracts/staging/v1/README.md)
 - [Backlog and work breakdown](docs/planning/backlog.md)
 
 The core design rule is that source-specific extraction, canonical staging, and
