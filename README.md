@@ -13,6 +13,7 @@ The project is currently in its planning phase. Start with:
 - [Audited data changes and go-live corrections](docs/architecture/audited-data-changes.md)
 - [Legacy schema assessment](docs/architecture/legacy-schema-assessment.md)
 - [Procedure dependency map](docs/architecture/procedure-dependency-map.md)
+- [Procedure operation inventory](docs/architecture/procedure-operation-inventory.md)
 - [Backlog and work breakdown](docs/planning/backlog.md)
 
 The core design rule is that source-specific extraction, canonical staging, and
